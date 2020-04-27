@@ -4,7 +4,7 @@ let params = (new URL(document.location)).searchParams,
 let title = document.getElementById('library-name');
 title.textContent = name;
 
-let myLibrary = [];
+let bookList = [];
 
 function Book(author, title, pages, read, isbn){
   if(!(author instanceof Author)) throw 'must input valid author';
@@ -21,7 +21,21 @@ function Author(firstName, lastName){
 }
 
 function addBookToLibrary(book){
-  myLibrary.push(book);
+  bookList.push(book);
 }
 
-
+function compareBooks(book1, book2){
+	if(book1.author.last < book2.author.last){
+		return -1;
+	}
+	if(book1.author.last > book2.author.last){
+		return 1;
+	}
+	if(book1.author.first < book2.author.first){
+		return -1;
+	}
+	if(book1.author.first > book2.author.first){
+		return 1;
+	}
+	return 0;
+}
