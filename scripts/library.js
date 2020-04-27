@@ -42,7 +42,21 @@ function showCreateBookForm(){
 }
 
 function createBook(){
+  let author = new Author(addBookForm.elements['author-last'].value,
+  	                      addBookForm.elements['author-first'].value);
+  let book = new Book(author,
+  	                  addBookForm.elements['title'].value,
+  	                  addBookForm.elements['pages'].value,
+  	                  addBookForm.elements['read'].value,
+  	                  addBookForm.elements['isbn'].value);
+
+  addBookToLibrary(book);
+  createBookListing(book);
+
   addBookPopup.hidden = true;
+  addBookForm.reset();
+
+  displayBooks();
 }
 
 function createBookListing(book){
