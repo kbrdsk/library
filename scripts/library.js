@@ -10,10 +10,12 @@ function Book(author, title, pages, read, isbn){
 }
 
 function Author(firstName, lastName){
-	this.first = firstName;
-	this.last = lastName;
+  this.first = firstName;
+  this.last = lastName;
 }
 
 function addBookToLibrary(book){
   myLibrary.push(book);
 }
+
+
