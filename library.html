@@ -17,8 +17,24 @@
 		</div>
 	</header>
 	<main>
+		<div id="add-book-popup" hidden>
+			<div id="add-book-form-container">
+				<form id="add-book-form">
+					<input id="add-title" type="text" placeholder="Title"></input>
+					<input id="add-author-first" type="text" placeholder="Author's First Name"></input>
+					<input id="add-author-last" type="text" placeholder="Author's Last Name"></input>
+					<input id="add-pages" type="number" placeholder="Number of Pages"></input>
+					<label id="add-read-label" for="add-read">Have Read</label>
+					<input id="add-read" type="checkbox"></input>
+					<input id="add-isbn" type="text" placeholder="ISBN"></input>
+					<button id="add-book-submit" type="submit">Add Book</button>
+				</form>
+			</div>
+		</div>
 		<div id="book-list">
-			<div id="add-book-link"></div>
+			<div id="add-book-listing">
+				<a id="add-book-link" href='#'>Add Book</a>
+			</div>
 		</div>
 		<a id="log-in-link" href=#>Log In</a>
 	</main>

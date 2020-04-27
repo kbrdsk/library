@@ -6,6 +6,16 @@ title.textContent = name;
 
 let bookDisplay = document.getElementById('book-list');
 
+let addBookLink = document.getElementById('add-book-link');
+addBookLink.addEventListener('click', showCreateBookForm);
+
+let addBookPopup = document.getElementById('add-book-popup');
+
+let addBookSubmit = document.getElementById('add-book-submit');
+addBookSubmit.addEventListener('click', createBook);
+
+let addBookForm = document.getElementById('add-book-form');
+
 let books = [],
   bookListings = [];
 
@@ -25,6 +35,14 @@ function Author(lastName, firstName){
 
 function addBookToLibrary(book){
   books.push(book);
+}
+
+function showCreateBookForm(){
+  addBookPopup.hidden = false;
+}
+
+function createBook(){
+  addBookPopup.hidden = true;
 }
 
 function createBookListing(book){
@@ -70,7 +88,7 @@ function filterByAuthor(author){
 }
 
 function displayBooks(){
-  let lastNode = document.getElementById('add-book-link');
+  let lastNode = document.getElementById('add-book-listing');
   for(let listing of bookListings){
     bookDisplay.insertBefore(listing, lastNode);
   }
