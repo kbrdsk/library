@@ -10,61 +10,62 @@
 	<header>
 		<h1 id="library-name"></h1>
 		<div id="navbar">
-			<input id="search-bar" type="text"></input>
-			<button id="search-button">Search</button>
-			<button id="add-book-button" hidden>Add Book</button>
-			<button id="settings" hidden>Settings</button>
+			<div id="search-container">
+				<input id="search-bar" type="text"></input>
+				<button id="search-button">Search</button>
+			</div>
+			<div id="management-buttons">
+				<button id="add-book-button" hidden>Add Book</button>
+				<button id="settings" hidden>Settings</button>
+			</div>
 		</div>
 	</header>
 	<main>
 		<div id="add-book-popup" hidden>
-			<div id="add-book-form-container">
-				<form id="add-book-form">
-					<input id="add-title" 
-					name="title" 
-					type="text" 
-					placeholder="Title">
-					</input>
+			<div id="add-book-form">
+				<input id="add-title" 
+				name="title" 
+				type="text" 
+				placeholder="Title">
+				</input>
 
-					<input id="add-author-first" 
-					name="author-first" 
-					type="text" 
-					placeholder="Author's First Name">
-					</input>
+				<input id="add-author-first" 
+				name="author-first" 
+				type="text" 
+				placeholder="Author's First Name">
+				</input>
 
-					<input id="add-author-last" 
-					name="author-last"
-					type="text" 
-					placeholder="Author's Last Name">
-					</input>
+				<input id="add-author-last" 
+				name="author-last"
+				type="text" 
+				placeholder="Author's Last Name">
+				</input>
 
-					<input id="add-pages" 
-					name="pages"
-					type="number" 
-					placeholder="Number of Pages">
-					</input>
+				<input id="add-pages" 
+				name="pages"
+				type="number" 
+				placeholder="Number of Pages">
+				</input>
 
-					<label id="add-read-label" 
-					for="add-read">
-					Have Read
-					</label>
+				<label id="add-read-label" 
+				for="add-read">
+				Have Read
+				</label>
 
-					<input id="add-read" 
-					name="read"
-					type="checkbox">
-					</input>
+				<input id="add-read" 
+				name="read"
+				type="checkbox">
+				</input>
 
-					<input id="add-isbn" 
-					name="isbn"
-					type="text" 
-					placeholder="ISBN">
-					</input>
+				<input id="add-isbn" 
+				name="isbn"
+				type="text" 
+				placeholder="ISBN">
+				</input>
 
-					<button id="add-book-submit" 
-					type="submit">
-					Add Book
-					</button>
-				</form>
+				<button id="add-book-submit">
+				Add Book
+				</button>
 			</div>
 		</div>
 		<div id="book-list">

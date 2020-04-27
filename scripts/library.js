@@ -1,8 +1,8 @@
-let params = (new URL(document.location)).searchParams,
-  name = params.get('name');
+let params = (new URL(document.location)).searchParams;
+let name = params.get('name');
 
-let title = document.getElementById('library-name');
-title.textContent = name;
+let libraryName = document.getElementById('library-name');
+libraryName.textContent = name;
 
 let bookDisplay = document.getElementById('book-list');
 
@@ -13,8 +13,6 @@ let addBookPopup = document.getElementById('add-book-popup');
 
 let addBookSubmit = document.getElementById('add-book-submit');
 addBookSubmit.addEventListener('click', createBook);
-
-let addBookForm = document.getElementById('add-book-form');
 
 let books = [],
   bookListings = [];
@@ -42,21 +40,30 @@ function showCreateBookForm(){
 }
 
 function createBook(){
-  let author = new Author(addBookForm.elements['author-last'].value,
-  	                      addBookForm.elements['author-first'].value);
+  let author = new Author(document.getElementById('add-author-first').value,
+  	                      document.getElementById('add-author-first').value);
   let book = new Book(author,
-  	                  addBookForm.elements['title'].value,
-  	                  addBookForm.elements['pages'].value,
-  	                  addBookForm.elements['read'].value,
-  	                  addBookForm.elements['isbn'].value);
+  	                  document.getElementById('add-title').value,
+  	                  document.getElementById('add-pages').value,
+  	                  document.getElementById('add-read').value,
+  	                  document.getElementById('add-isbn').value);
 
   addBookToLibrary(book);
   createBookListing(book);
 
   addBookPopup.hidden = true;
-  addBookForm.reset();
+  resetBookForm();
 
   displayBooks();
+}
+
+function resetBookForm(){
+  document.getElementById('add-author-first').value = '';
+  document.getElementById('add-author-first').value = '';
+  document.getElementById('add-title').value = '';
+  document.getElementById('add-pages').value = '';
+  document.getElementById('add-read').value = '';
+  document.getElementById('add-isbn').value = '';
 }
 
 function createBookListing(book){
