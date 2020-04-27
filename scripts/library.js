@@ -43,6 +43,7 @@ function createBookListing(book){
   authorLink.classList.add('author-link');
   authorLink.textContent = `${book.author.last}, ${book.author.first}`;
   authorLink.addEventListener('click', _ => filterByAuthor(book.author));
+  authorLink.href = '#';
 
   infoLink.classList.add('info-link');  
   infoLink.textContent = 'info';
@@ -51,6 +52,7 @@ function createBookListing(book){
   deleteLink.classList.add('delete-link');
   deleteLink.textContent = 'delete';
   deleteLink.addEventListener('click', _ => deleteListing(listing));
+  deleteLink.href = '#';
 
   for(let node of [titleLink, authorLink, infoLink, deleteLink]){
   	listing.appendChild(node);
@@ -60,11 +62,11 @@ function createBookListing(book){
 }
 
 function deleteListing(listing){
-
+  alert('Delete?');
 }
 
 function filterByAuthor(author){
-	
+  alert(`${author.first} ${author.last}`);
 }
 
 function displayBooks(){
@@ -90,7 +92,7 @@ function compareBooks(book1, book2){
   return 0;
 }
 
-let baldwin = new Author('James', 'Baldwin');
+let baldwin = new Author('Baldwin', 'James');
 createBookListing(new Book(baldwin, "Giovanni's Room", 183, false, 341234));
 
 displayBooks();
