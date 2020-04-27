@@ -1,3 +1,9 @@
+let params = (new URL(document.location)).searchParams,
+	name = params.get('name');
+
+let title = document.getElementById('library-name');
+title.textContent = name;
+
 let myLibrary = [];
 
 function Book(author, title, pages, read, isbn){
