@@ -1,8 +1,9 @@
-let params = (new URL(document.location)).searchParams;
-let name = params.get('name');
+let params = (new URL(document.location)).searchParams,
+    name = params.get('name');
 
 let libraryName = document.getElementById('library-name');
 libraryName.textContent = name;
+libraryName.addEventListener('click', showAllListings);
 
 let bookDisplay = document.getElementById('book-list');
 
@@ -26,9 +27,13 @@ function Book(author, title, pages, read, isbn){
   this.isbn = isbn;
 }
 
-function Author(lastName, firstName){
+function Author(lastName = '', firstName = ''){
   this.first = firstName;
   this.last = lastName;
+  this.equals = (author) => {
+  	return author.first === this.first 
+  	    && author.last === this.last;
+  }
 }
 
 function addBookToLibrary(book){
@@ -54,7 +59,7 @@ function createBook(){
   addBookPopup.hidden = true;
   resetBookForm();
 
-  displayBooks();
+  displayBooks(bookListings);
 }
 
 function resetBookForm(){
@@ -74,6 +79,7 @@ function createBookListing(book){
       deleteLink = document.createElement('a');
 
   listing.classList.add('book-listing');
+  listing.book = book;
 
   titleLink.classList.add('title-link');
   titleLink.textContent = book.title;
@@ -105,10 +111,19 @@ function deleteListing(listing){
 }
 
 function filterByAuthor(author){
-  alert(`${author.first} ${author.last}`);
+  for(let listing of bookListings){
+  	bookDisplay.removeChild(listing);
+  }
+  let filteredListings = 
+      bookListings.filter(listing => listing.book.author.equals(author));
+  displayBooks(filteredListings);
 }
 
-function displayBooks(){
+function showAllListings(){
+	displayBooks(bookListings);
+}
+
+function displayBooks(bookListings){
   let lastNode = document.getElementById('add-book-listing');
   for(let listing of bookListings){
     bookDisplay.insertBefore(listing, lastNode);
@@ -134,4 +149,4 @@ function compareBooks(book1, book2){
 let baldwin = new Author('Baldwin', 'James');
 createBookListing(new Book(baldwin, "Giovanni's Room", 183, false, 341234));
 
-displayBooks();
+displayBooks(bookListings);
