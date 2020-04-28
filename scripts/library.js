@@ -213,5 +213,11 @@ function compareBooks(book1, book2){
   if(book1.author.first > book2.author.first){
     return 1;
   }
+  if(book1.title < book2.title){
+  	return -1;
+  }
+  if(book1.title > book2.title){
+  	return 1;
+  }
   return 0;
 }
