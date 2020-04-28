@@ -15,16 +15,33 @@ let addBookPopup = document.getElementById('add-book-popup');
 let addBookSubmit = document.getElementById('add-book-submit');
 addBookSubmit.addEventListener('click', createBook);
 
+let libraryRef = firebase.storage().ref().child(`${name}`),
+    indexRef = libraryRef.child('index');
+
 let books = [],
   bookListings = [];
 
-function Book(author, title, pages, read, isbn){
+let testRef = libraryRef.child('1223');
+testRef.getDownloadURL().then(function(url){
+	let xhr = new XMLHttpRequest();
+	xhr.open('GET', url, false);
+	xhr.send();
+	console.log(xhr.response);
+})
+
+function Book(author, title, pages, read, isbn, ref){
   if(!(author instanceof Author)) throw 'must input valid author';
   this.author = author; 
   this.title = title;
   this.pages = pages;
   this.read = read;
   this.isbn = isbn;
+  this.ref = ref? ref : createRef(this);
+}
+
+function createRef(book){
+  if(book.isbn) return book.isbn;
+  else return book.title;
 }
 
 function Author(lastName = '', firstName = ''){
@@ -36,7 +53,19 @@ function Author(lastName = '', firstName = ''){
   }
 }
 
+function registerBook(book){
+  let ref = libraryRef.child(book.ref);
+  ref.putString(JSON.stringify(book));
+}
+
+function getBook(str){
+  let bookData = JSON.parse(str);
+  let author = new Author(bookData.author.last, bookData.author.first);
+  return new Book(author, bookData.title, bookData.pages, bookData.read, bookData.isbn);
+}
+
 function addBookToLibrary(book){
+  registerBook(book);
   books.push(book);
 }
 
@@ -45,7 +74,7 @@ function showCreateBookForm(){
 }
 
 function createBook(){
-  let author = new Author(document.getElementById('add-author-first').value,
+  let author = new Author(document.getElementById('add-author-last').value,
   	                      document.getElementById('add-author-first').value);
   let book = new Book(author,
   	                  document.getElementById('add-title').value,
@@ -64,7 +93,7 @@ function createBook(){
 
 function resetBookForm(){
   document.getElementById('add-author-first').value = '';
-  document.getElementById('add-author-first').value = '';
+  document.getElementById('add-author-last').value = '';
   document.getElementById('add-title').value = '';
   document.getElementById('add-pages').value = '';
   document.getElementById('add-read').value = '';

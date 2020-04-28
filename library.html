@@ -75,6 +75,28 @@
 		</div>
 		<a id="log-in-link" href=#>Log In</a>
 	</main>
+	<!-- The core Firebase JS SDK is always required and must be listed first -->
+	<script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
+	
+	<!-- TODO: Add SDKs for Firebase products that you want to use
+	     https://firebase.google.com/docs/web/setup#available-libraries -->
+	<script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-storage.js"></script>
+	
+	<script>
+	  // Your web app's Firebase configuration
+	  var firebaseConfig = {
+	    apiKey: "AIzaSyDwbll4zeQoctc4vI1GeE74LqMj2ioHaNg",
+	    authDomain: "odin-library-b7e12.firebaseapp.com",
+	    databaseURL: "https://odin-library-b7e12.firebaseio.com",
+	    projectId: "odin-library-b7e12",
+	    storageBucket: "odin-library-b7e12.appspot.com",
+	    messagingSenderId: "126604321893",
+	    appId: "1:126604321893:web:5410f42bc287ad26ba928c",
+	    measurementId: "G-L099G26KGH"
+	  };
+	  // Initialize Firebase
+	  firebase.initializeApp(firebaseConfig);
+	</script>
 	<script src = 'scripts/library.js'></script>
 </body>
 </html>
