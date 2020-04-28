@@ -22,6 +22,7 @@ function goToLibrary(){
 }
 
 function newLibrary(){
+  updateName();
   let indexRef = libraryRef.child(`${name}/index`);
   indexRef.putString('');
 }
