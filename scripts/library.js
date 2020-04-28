@@ -21,13 +21,44 @@ let libraryRef = firebase.storage().ref().child(`${name}`),
 let books = [],
   bookListings = [];
 
-let testRef = libraryRef.child('1223');
-testRef.getDownloadURL().then(function(url){
-	let xhr = new XMLHttpRequest();
-	xhr.open('GET', url, false);
-	xhr.send();
-	console.log(xhr.response);
-})
+
+indexRef.getDownloadURL().then(function(url){
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url, false);
+    xhr.send();
+    let index = xhr.response;
+    if(index){
+      index = index.match(/.+/g)
+                   .map(i => [i, false]);
+  
+       getRegisteredBooks(index)
+           .then(_ => {
+           	   console.log(books);
+               bookListings = books.map(createBookListing);
+               console.log(bookListings);
+               displayBooks(bookListings);
+       });
+    }
+});
+
+function getRegisteredBooks(index){
+  return new Promise(function(resolve, reject){
+  	  setTimeout(() => reject(), 2000);
+      for(let i in index){
+      	console.log(index[i][0]);
+        let ref = libraryRef.child(index[i][0]);
+        ref.getDownloadURL().then(function(url){
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', url, false);
+            xhr.send();
+            let book = parseBook(xhr.response);
+            books.push(book);
+            index[i][1] = true;
+            if(index.every(([_, loaded]) => loaded)) resolve('loaded'); 
+        })
+      }
+  });
+}
 
 function Book(author, title, pages, read, isbn, ref){
   if(!(author instanceof Author)) throw 'must input valid author';
@@ -48,17 +79,27 @@ function Author(lastName = '', firstName = ''){
   this.first = firstName;
   this.last = lastName;
   this.equals = (author) => {
-  	return author.first === this.first 
-  	    && author.last === this.last;
+      return author.first === this.first 
+          && author.last === this.last;
   }
 }
 
 function registerBook(book){
   let ref = libraryRef.child(book.ref);
+
   ref.putString(JSON.stringify(book));
+
+  indexRef.getDownloadURL().then(function(url){
+  	let xhr = new XMLHttpRequest();
+  	xhr.open('GET', url, false);
+  	xhr.send();
+  	let index = xhr.response;
+    index += `${book.ref}\n`;
+    indexRef.putString(index);
+  })
 }
 
-function getBook(str){
+function parseBook(str){
   let bookData = JSON.parse(str);
   let author = new Author(bookData.author.last, bookData.author.first);
   return new Book(author, bookData.title, bookData.pages, bookData.read, bookData.isbn);
@@ -75,15 +116,15 @@ function showCreateBookForm(){
 
 function createBook(){
   let author = new Author(document.getElementById('add-author-last').value,
-  	                      document.getElementById('add-author-first').value);
+                            document.getElementById('add-author-first').value);
   let book = new Book(author,
-  	                  document.getElementById('add-title').value,
-  	                  document.getElementById('add-pages').value,
-  	                  document.getElementById('add-read').value,
-  	                  document.getElementById('add-isbn').value);
+                        document.getElementById('add-title').value,
+                        document.getElementById('add-pages').value,
+                        document.getElementById('add-read').value,
+                        document.getElementById('add-isbn').value);
 
   addBookToLibrary(book);
-  createBookListing(book);
+  bookListings.push(createBookListing(book));
 
   addBookPopup.hidden = true;
   resetBookForm();
@@ -129,10 +170,10 @@ function createBookListing(book){
   deleteLink.href = '#';
 
   for(let node of [titleLink, authorLink, infoLink, deleteLink]){
-  	listing.appendChild(node);
+      listing.appendChild(node);
   }
 
-  bookListings.push(listing);
+  return listing;
 }
 
 function deleteListing(listing){
@@ -141,7 +182,7 @@ function deleteListing(listing){
 
 function filterByAuthor(author){
   for(let listing of bookListings){
-  	bookDisplay.removeChild(listing);
+      bookDisplay.removeChild(listing);
   }
   let filteredListings = 
       bookListings.filter(listing => listing.book.author.equals(author));
@@ -149,7 +190,7 @@ function filterByAuthor(author){
 }
 
 function showAllListings(){
-	displayBooks(bookListings);
+    displayBooks(bookListings);
 }
 
 function displayBooks(bookListings){
@@ -174,8 +215,3 @@ function compareBooks(book1, book2){
   }
   return 0;
 }
-
-let baldwin = new Author('Baldwin', 'James');
-createBookListing(new Book(baldwin, "Giovanni's Room", 183, false, 341234));
-
-displayBooks(bookListings);

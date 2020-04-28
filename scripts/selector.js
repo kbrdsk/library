@@ -7,20 +7,23 @@ let name,
 
 nameInput.addEventListener('change', updateName);
 toButton.addEventListener('mousedown', goToLibrary);
-newButton.addEventListener('click', newLibrary)
+newButton.addEventListener('click', newLibrary);
+
+let libraryRef = firebase.storage().ref();
 
 function updateName(){
-	name = nameInput.value;
+  name = nameInput.value;
 }
 
 function goToLibrary(){
-	updateName();
-	let queryString = `?name=${name}`;
-	window.location.href = 'library.html' + queryString;
+  updateName();
+  let queryString = `?name=${name}`;
+  window.location.href = 'library.html' + queryString;
 }
 
 function newLibrary(){
-
+  let indexRef = libraryRef.child(`${name}/index`);
+  indexRef.putString('');
 }
 
 function checkExistingLibrary(){
