@@ -32,7 +32,7 @@ indexRef.getDownloadURL().then(function(url){
                    .map(i => [i, false]);
   
        getRegisteredBooks(index)
-           .then(_ => {
+           .then(() => {
            	   books.sort(compareBooks);
                bookListings = books.map(createBookListing);
                displayBooks(bookListings);
@@ -42,7 +42,7 @@ indexRef.getDownloadURL().then(function(url){
 
 function getRegisteredBooks(index){
   return new Promise(function(resolve, reject){
-  	  setTimeout(() => reject(), 2000);
+  	  setTimeout(() => reject(new Error('timeout')), 2000);
       for(let i in index){
       	console.log(index[i][0]);
         let ref = libraryRef.child(index[i][0]);
@@ -181,7 +181,24 @@ function createBookListing(book){
 }
 
 function deleteListing(listing){
-  alert('Delete?');
+  bookListings = bookListings.filter(node => node !== listing);
+  books = books.filter(book => book.ref !== listing.book.ref);
+  bookDisplay.removeChild(listing);
+  indexRef.getDownloadURL().then(function(url){
+  	let xhr = new XMLHttpRequest();
+  	xhr.open('GET', url, false);
+  	xhr.send();
+  	let index = xhr.response
+  	               .match(/.+/g)
+  	               .filter(i => i !== listing.book.ref)
+  	               .join('\n');
+  	indexRef.putString(index);
+  });
+  libraryRef.child(listing.book.ref).getDownloadURL().then(function(url){
+  	let xhr = new XMLHttpRequest();
+  	xhr.open('DELETE', url);
+  	xhr.send();
+  })
 }
 
 function filterByAuthor(author){
