@@ -33,9 +33,8 @@ indexRef.getDownloadURL().then(function(url){
   
        getRegisteredBooks(index)
            .then(_ => {
-           	   console.log(books);
+           	   books.sort(compareBooks);
                bookListings = books.map(createBookListing);
-               console.log(bookListings);
                displayBooks(bookListings);
        });
     }
@@ -108,6 +107,7 @@ function parseBook(str){
 function addBookToLibrary(book){
   registerBook(book);
   books.push(book);
+  books.sort(compareBooks);
 }
 
 function showCreateBookForm(){
@@ -152,19 +152,23 @@ function createBookListing(book){
   listing.book = book;
 
   titleLink.classList.add('title-link');
+  titleLink.classList.add('listing-element');
   titleLink.textContent = book.title;
   titleLink.href = '#';
 
   authorLink.classList.add('author-link');
+  authorLink.classList.add('listing-element');
   authorLink.textContent = `${book.author.last}, ${book.author.first}`;
   authorLink.addEventListener('click', _ => filterByAuthor(book.author));
   authorLink.href = '#';
 
   infoLink.classList.add('info-link');  
+  infoLink.classList.add('listing-element'); 
   infoLink.textContent = 'info';
   infoLink.href = '#';
 
   deleteLink.classList.add('delete-link');
+  deleteLink.classList.add('listing-element');
   deleteLink.textContent = 'delete';
   deleteLink.addEventListener('click', _ => deleteListing(listing));
   deleteLink.href = '#';
