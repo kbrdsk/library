@@ -17,8 +17,14 @@ function updateName(){
 
 function goToLibrary(){
   updateName();
-  let queryString = `?name=${name}`;
-  window.location.href = 'library.html' + queryString;
+  let indexRef = libraryRef.child(`${name}/index`);
+  indexRef.getDownloadURL().then(
+      result => {      
+        let queryString = `?name=${name}`;
+        window.location.href = 'library.html' + queryString;
+      },
+      error => {alert("A library with that name doesn't exist.")}
+  );
 }
 
 function newLibrary(){
