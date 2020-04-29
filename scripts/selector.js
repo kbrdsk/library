@@ -24,7 +24,14 @@ function goToLibrary(){
 function newLibrary(){
   updateName();
   let indexRef = libraryRef.child(`${name}/index`);
-  indexRef.putString('');
+  indexRef.getDownloadURL().then(
+      result => {alert('A library with that name already exists.');},
+      error => {
+          if(error.code_ === 'storage/object-not-found'){
+            indexRef.putString('');
+          }
+      }
+  );
 }
 
 function checkExistingLibrary(){
