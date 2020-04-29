@@ -12,8 +12,8 @@ addBookLink.addEventListener('click', showCreateBookForm);
 
 let addBookPopup = document.getElementById('add-book-popup');
 
-let addBookSubmit = document.getElementById('add-book-submit');
-addBookSubmit.addEventListener('click', createBook);
+let bookInfoSubmit = document.getElementById('add-book-submit');
+bookInfoSubmit.addEventListener('click', processBookInfo);
 
 let libraryRef = firebase.storage().ref().child(`${name}`),
     indexRef = libraryRef.child('index');
@@ -112,28 +112,65 @@ function addBookToLibrary(book){
 
 function showCreateBookForm(){
   addBookPopup.hidden = false;
+  addBookPopup.listing = null;
 }
 
-function createBook(){
+function showEditBookForm(listing){
+  let book = listing.book;
+  document.getElementById('add-title').value = book.title;
+  document.getElementById('add-author-first').value = book.author.first;
+  document.getElementById('add-author-last').value = book.author.last;
+  document.getElementById('add-pages').value = book.pages;
+  document.getElementById('add-read').value = book.read;
+  document.getElementById('add-isbn').value = book.isbn;
+  addBookPopup.listing = listing;
+  addBookPopup.hidden = false;
+}
+
+function processBookInfo(){
   let isbn = document.getElementById('add-isbn').value;
   if(!isbn || isValidISBN(isbn)){
-    let author = new Author(document.getElementById('add-author-last').value,
-                            document.getElementById('add-author-first').value);
-    let book = new Book(author,
-                          document.getElementById('add-title').value,
-                          document.getElementById('add-pages').value,
-                          document.getElementById('add-read').value,
-                          isbn);
-
-    addBookToLibrary(book);
-    bookListings.push(createBookListing(book));
-
+    if(!addBookPopup.listing) createBook();
+    if(addBookPopup.listing) editBookInfo();
+    
     addBookPopup.hidden = true;
     resetBookForm();
-
-    displayBooks(bookListings);  
+    displayBooks(bookListings);
   }
   else(alert('Please enter a valid isbn-10'));
+}
+
+function editBookInfo(){
+  let book = addBookPopup.listing.book;
+  writeBookInfo(book);
+  updateListingInfo(addBookPopup.listing);
+  libraryRef.child(book.ref).putString(JSON.stringify(book));
+}
+
+function writeBookInfo(book){
+  book.author.first = document.getElementById('add-author-first').value;
+  book.author.last = document.getElementById('add-author-last').value;
+  book.title = document.getElementById('add-title').value;
+  book.pages = document.getElementById('add-pages').value;
+  book.read = document.getElementById('add-read').value;
+  book.isbn = document.getElementById('add-isbn').value;
+  book.ref = createRef(book);
+}
+
+function updateListingInfo(listing){
+  let titleLink = listing.getElementsByClassName('title-link')[0],
+      authorLink = listing.getElementsByClassName('author-link')[0];
+  titleLink.textContent = listing.book.title;
+  authorLink.textContent = `${listing.book.author.last}, `
+             + `${listing.book.author.first}`;
+}
+
+
+function createBook(){
+  let book = new Book(new Author());
+  writeBookInfo(book);
+  addBookToLibrary(book);
+  bookListings.push(createBookListing(book));
 }
 
 function resetBookForm(){
@@ -150,6 +187,7 @@ function createBookListing(book){
       titleLink = document.createElement('a'),
       authorLink = document.createElement('a'),
       infoLink = document.createElement('a'),
+      editLink = document.createElement('a'),
       deleteLink = document.createElement('a');
 
   listing.classList.add('book-listing');
@@ -172,13 +210,19 @@ function createBookListing(book){
   infoLink.addEventListener('click', () => showBookInfo(book.ref));
   infoLink.href = '#';
 
+  editLink.classList.add('edit-link');  
+  editLink.classList.add('listing-element'); 
+  editLink.textContent = 'edit';
+  editLink.addEventListener('click', () => showEditBookForm(listing));
+  editLink.href = '#';
+
   deleteLink.classList.add('delete-link');
   deleteLink.classList.add('listing-element');
   deleteLink.textContent = 'delete';
   deleteLink.addEventListener('click', () => deleteListing(listing));
   deleteLink.href = '#';
 
-  for(let node of [titleLink, authorLink, infoLink, deleteLink]){
+  for(let node of [titleLink, authorLink, infoLink, editLink, deleteLink]){
       listing.appendChild(node);
   }
 
