@@ -34,12 +34,22 @@ function newLibrary(){
       result => {alert('A library with that name already exists.');},
       error => {
           if(error.code_ === 'storage/object-not-found'){
+            let password = newPassword();
+            libraryRef.child(`${name}/password`).putString(password);
             indexRef.putString('');
           }
       }
   );
 }
 
-function checkExistingLibrary(){
+function newPassword(){
+  let password = prompt('Enter password:');
+  let passwordConfirm = prompt('Confirm password:');
 
+  if(password !== passwordConfirm){
+    alert("Passwords don't match.")
+    return newPassword();
+  } 
+  
+  return password;
 }
