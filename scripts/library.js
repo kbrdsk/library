@@ -115,21 +115,25 @@ function showCreateBookForm(){
 }
 
 function createBook(){
-  let author = new Author(document.getElementById('add-author-last').value,
-                            document.getElementById('add-author-first').value);
-  let book = new Book(author,
-                        document.getElementById('add-title').value,
-                        document.getElementById('add-pages').value,
-                        document.getElementById('add-read').value,
-                        document.getElementById('add-isbn').value);
+  let isbn = document.getElementById('add-isbn').value;
+  if(isValidISBN(isbn)){
+    let author = new Author(document.getElementById('add-author-last').value,
+                              document.getElementById('add-author-first').value);
+    let book = new Book(author,
+                          document.getElementById('add-title').value,
+                          document.getElementById('add-pages').value,
+                          document.getElementById('add-read').value,
+                          isbn);
 
-  addBookToLibrary(book);
-  bookListings.push(createBookListing(book));
+    addBookToLibrary(book);
+    bookListings.push(createBookListing(book));
 
-  addBookPopup.hidden = true;
-  resetBookForm();
+    addBookPopup.hidden = true;
+    resetBookForm();
 
-  displayBooks(bookListings);
+    displayBooks(bookListings);  
+  }
+  else(alert('Please enter a valid isbn-10'));
 }
 
 function resetBookForm(){
