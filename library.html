@@ -16,7 +16,7 @@
 			</div>
 			<div id="management-buttons">
 				<button id="add-book-button" hidden>Add Book</button>
-				<button id="settings" hidden>Settings</button>
+				<button id="settings-button" hidden>Settings</button>
 			</div>
 		</div>
 	</header>
@@ -64,16 +64,21 @@
 				</input>
 
 				<button id="add-book-submit">
-				Done
+					Done
+				</button>
+
+				<button id="add-book-cancel">
+					Cancel
 				</button>
 			</div>
 		</div>
 		<div id="book-list">
 			<div id="add-book-listing">
-				<a id="add-book-link" href='#'>Add Book</a>
+				<a id="add-book-link" href='#' hidden>Add Book</a>
 			</div>
 		</div>
 		<a id="log-in-link" href=#>Log In</a>
+		<a id="log-out-link" href=# hidden>Log Out</a>
 	</main>
 	<!-- The core Firebase JS SDK is always required and must be listed first -->
 	<script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>

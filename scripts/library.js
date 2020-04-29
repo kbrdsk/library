@@ -10,13 +10,29 @@ let bookDisplay = document.getElementById('book-list');
 let addBookLink = document.getElementById('add-book-link');
 addBookLink.addEventListener('click', showCreateBookForm);
 
+let loginLink = document.getElementById('log-in-link');
+loginLink.addEventListener('click', login);
+
+let logoutLink = document.getElementById('log-out-link');
+logoutLink.addEventListener('click', logout);
+
+
+let settingsButton = document.getElementById('settings-button');
+
+let addBookButton = document.getElementById('add-book-button');
+addBookButton.addEventListener('click', showCreateBookForm);
+
 let addBookPopup = document.getElementById('add-book-popup');
 
-let bookInfoSubmit = document.getElementById('add-book-submit');
-bookInfoSubmit.addEventListener('click', processBookInfo);
+let bookInfoSubmitButton = document.getElementById('add-book-submit');
+bookInfoSubmitButton.addEventListener('click', processBookInfo);
+
+let bookInfoCancelButton = document.getElementById('add-book-cancel');
+bookInfoCancelButton.addEventListener('click', cancelBookInfo);
 
 let libraryRef = firebase.storage().ref().child(`${name}`),
-    indexRef = libraryRef.child('index');
+    indexRef = libraryRef.child('index'),
+    passwordRef = libraryRef.child('password');
 
 let books = [],
   bookListings = [];
@@ -39,6 +55,33 @@ indexRef.getDownloadURL().then(function(url){
        });
     }
 });
+
+function login(){
+  passwordRef.getDownloadURL().then(function(url){
+    let xhr = new XMLHttpRequest();
+    xhr.open('GET', url, false);
+    xhr.send();
+
+    let password = xhr.response;
+
+    if(password === prompt("Enter password:")){
+      addBookLink.hidden = false;
+      loginLink.hidden = true;
+      logoutLink.hidden = false;
+      addBookButton.hidden = false;
+      settingsButton.hidden = false;
+    }
+    else alert('Incorrect password');
+  })
+}
+
+function logout(){
+  addBookLink.hidden = true;
+  loginLink.hidden = false;
+  logoutLink.hidden = true;
+  addBookButton.hidden = true;
+  settingsButton.hidden = true;
+}
 
 function getRegisteredBooks(index){
   return new Promise(function(resolve, reject){
@@ -125,6 +168,11 @@ function showEditBookForm(listing){
   document.getElementById('add-isbn').value = book.isbn;
   addBookPopup.listing = listing;
   addBookPopup.hidden = false;
+}
+
+function cancelBookInfo(){
+  addBookPopup.hidden = true;
+  resetBookForm();
 }
 
 function processBookInfo(){
