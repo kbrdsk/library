@@ -116,9 +116,9 @@ function showCreateBookForm(){
 
 function createBook(){
   let isbn = document.getElementById('add-isbn').value;
-  if(isValidISBN(isbn)){
+  if(!isbn || isValidISBN(isbn)){
     let author = new Author(document.getElementById('add-author-last').value,
-                              document.getElementById('add-author-first').value);
+                            document.getElementById('add-author-first').value);
     let book = new Book(author,
                           document.getElementById('add-title').value,
                           document.getElementById('add-pages').value,
