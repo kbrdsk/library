@@ -159,18 +159,19 @@ function createBookListing(book){
   authorLink.classList.add('author-link');
   authorLink.classList.add('listing-element');
   authorLink.textContent = `${book.author.last}, ${book.author.first}`;
-  authorLink.addEventListener('click', _ => filterByAuthor(book.author));
+  authorLink.addEventListener('click', () => filterByAuthor(book.author));
   authorLink.href = '#';
 
   infoLink.classList.add('info-link');  
   infoLink.classList.add('listing-element'); 
   infoLink.textContent = 'info';
+  infoLink.addEventListener('click', () => showBookInfo(book.ref));
   infoLink.href = '#';
 
   deleteLink.classList.add('delete-link');
   deleteLink.classList.add('listing-element');
   deleteLink.textContent = 'delete';
-  deleteLink.addEventListener('click', _ => deleteListing(listing));
+  deleteLink.addEventListener('click', () => deleteListing(listing));
   deleteLink.href = '#';
 
   for(let node of [titleLink, authorLink, infoLink, deleteLink]){
@@ -178,6 +179,11 @@ function createBookListing(book){
   }
 
   return listing;
+}
+
+function showBookInfo(ref){
+  let queryString = `?bookRef=${name}/${ref}`;
+  window.location.href = 'book.html' + queryString;
 }
 
 function deleteListing(listing){
