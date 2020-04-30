@@ -1,5 +1,10 @@
+//Main window element declarations
+
 let params = (new URL(document.location)).searchParams,
     name = params.get('name');
+
+let books = [],
+  bookListings = [];
 
 let libraryName = document.getElementById('library-name');
 libraryName.textContent = name;
@@ -16,13 +21,16 @@ loginLink.addEventListener('click', login);
 let logoutLink = document.getElementById('log-out-link');
 logoutLink.addEventListener('click', logout);
 
-
 let settingsButton = document.getElementById('settings-button');
 
 let addBookButton = document.getElementById('add-book-button');
 addBookButton.addEventListener('click', showCreateBookForm);
 
-let addBookPopup = document.getElementById('add-book-popup');
+
+
+//Book info popup declarations
+
+let bookInfoPopup = document.getElementById('add-book-popup');
 
 let bookInfoSubmitButton = document.getElementById('add-book-submit');
 bookInfoSubmitButton.addEventListener('click', processBookInfo);
@@ -30,13 +38,17 @@ bookInfoSubmitButton.addEventListener('click', processBookInfo);
 let bookInfoCancelButton = document.getElementById('add-book-cancel');
 bookInfoCancelButton.addEventListener('click', cancelBookInfo);
 
+
+
+//Firebase refs
+
 let libraryRef = firebase.storage().ref().child(`${name}`),
     indexRef = libraryRef.child('index'),
     passwordRef = libraryRef.child('password');
 
-let books = [],
-  bookListings = [];
 
+
+//Get and display booklist from server on page load
 
 indexRef.getDownloadURL().then(function(url){
     let xhr = new XMLHttpRequest();
@@ -55,6 +67,38 @@ indexRef.getDownloadURL().then(function(url){
        });
     }
 });
+
+
+
+//Book/Author objects
+
+function Author(lastName = '', firstName = ''){
+  this.first = firstName;
+  this.last = lastName;
+  this.equals = (author) => {
+      return author.first === this.first 
+          && author.last === this.last;
+  }
+}
+
+function Book(author, title, pages, read, isbn, ref){
+  if(!(author instanceof Author)) throw 'must input valid author';
+  this.author = author; 
+  this.title = title;
+  this.pages = pages;
+  this.read = read;
+  this.isbn = isbn;
+  this.ref = ref? ref : createRef(this);
+}
+
+function createRef(book){
+  if(book.isbn) return book.isbn;
+  else return book.title;
+}
+
+
+
+//login/logout functions
 
 function login(){
   passwordRef.getDownloadURL().then(function(url){
@@ -83,48 +127,10 @@ function logout(){
   settingsButton.hidden = true;
 }
 
-function getRegisteredBooks(index){
-  return new Promise(function(resolve, reject){
-  	  setTimeout(() => reject(new Error('timeout')), 2000);
-      for(let i in index){
-      	console.log(index[i][0]);
-        let ref = libraryRef.child(index[i][0]);
-        ref.getDownloadURL().then(function(url){
-            let xhr = new XMLHttpRequest();
-            xhr.open('GET', url, false);
-            xhr.send();
-            let book = parseBook(xhr.response);
-            books.push(book);
-            index[i][1] = true;
-            if(index.every(([_, loaded]) => loaded)) resolve('loaded'); 
-        })
-      }
-  });
-}
 
-function Book(author, title, pages, read, isbn, ref){
-  if(!(author instanceof Author)) throw 'must input valid author';
-  this.author = author; 
-  this.title = title;
-  this.pages = pages;
-  this.read = read;
-  this.isbn = isbn;
-  this.ref = ref? ref : createRef(this);
-}
 
-function createRef(book){
-  if(book.isbn) return book.isbn;
-  else return book.title;
-}
 
-function Author(lastName = '', firstName = ''){
-  this.first = firstName;
-  this.last = lastName;
-  this.equals = (author) => {
-      return author.first === this.first 
-          && author.last === this.last;
-  }
-}
+//get/put functions for server
 
 function registerBook(book){
   let ref = libraryRef.child(book.ref);
@@ -147,6 +153,29 @@ function parseBook(str){
   return new Book(author, bookData.title, bookData.pages, bookData.read, bookData.isbn);
 }
 
+function getRegisteredBooks(index){
+  return new Promise(function(resolve, reject){
+      setTimeout(() => reject(new Error('timeout')), 2000);
+      for(let i in index){
+        console.log(index[i][0]);
+        let ref = libraryRef.child(index[i][0]);
+        ref.getDownloadURL().then(function(url){
+            let xhr = new XMLHttpRequest();
+            xhr.open('GET', url, false);
+            xhr.send();
+            let book = parseBook(xhr.response);
+            books.push(book);
+            index[i][1] = true;
+            if(index.every(([_, loaded]) => loaded)) resolve('loaded'); 
+        })
+      }
+  });
+}
+
+
+
+//book info popup functions
+
 function addBookToLibrary(book){
   registerBook(book);
   books.push(book);
@@ -154,8 +183,8 @@ function addBookToLibrary(book){
 }
 
 function showCreateBookForm(){
-  addBookPopup.hidden = false;
-  addBookPopup.listing = null;
+  bookInfoPopup.hidden = false;
+  bookInfoPopup.listing = null;
 }
 
 function showEditBookForm(listing){
@@ -166,22 +195,22 @@ function showEditBookForm(listing){
   document.getElementById('add-pages').value = book.pages;
   document.getElementById('add-read').value = book.read;
   document.getElementById('add-isbn').value = book.isbn;
-  addBookPopup.listing = listing;
-  addBookPopup.hidden = false;
+  bookInfoPopup.listing = listing;
+  bookInfoPopup.hidden = false;
 }
 
 function cancelBookInfo(){
-  addBookPopup.hidden = true;
+  bookInfoPopup.hidden = true;
   resetBookForm();
 }
 
 function processBookInfo(){
   let isbn = document.getElementById('add-isbn').value;
   if(!isbn || isValidISBN(isbn)){
-    if(!addBookPopup.listing) createBook();
-    if(addBookPopup.listing) editBookInfo();
+    if(!bookInfoPopup.listing) createBook();
+    if(bookInfoPopup.listing) editBookInfo();
     
-    addBookPopup.hidden = true;
+    bookInfoPopup.hidden = true;
     resetBookForm();
     displayBooks(bookListings);
   }
@@ -189,9 +218,9 @@ function processBookInfo(){
 }
 
 function editBookInfo(){
-  let book = addBookPopup.listing.book;
+  let book = bookInfoPopup.listing.book;
   writeBookInfo(book);
-  updateListingInfo(addBookPopup.listing);
+  updateListingInfo(bookInfoPopup.listing);
   libraryRef.child(book.ref).putString(JSON.stringify(book));
 }
 
@@ -277,6 +306,11 @@ function createBookListing(book){
   return listing;
 }
 
+
+
+
+//link functions
+
 function showBookInfo(ref){
   let queryString = `?bookRef=${name}/${ref}`;
   window.location.href = 'book.html' + queryString;
@@ -315,6 +349,11 @@ function filterByAuthor(author){
 function showAllListings(){
     displayBooks(bookListings);
 }
+
+
+
+
+//misc helper functions
 
 function displayBooks(bookListings){
   let lastNode = document.getElementById('add-book-listing');
