@@ -24,12 +24,26 @@ let logoutLink = document.getElementById('log-out-link');
 logoutLink.addEventListener('click', logout);
 
 let settingsButton = document.getElementById('settings-button');
+settingsButton.addEventListener('click', showSettingsPopup);
 
 let addBookButton = document.getElementById('add-book-button');
 addBookButton.addEventListener('click', showCreateBookForm);
 
 let addBookLink = document.getElementById('add-book-link');
 addBookLink.addEventListener('click', showCreateBookForm);
+
+
+//Settings popup declarations
+let settingsPopup = document.getElementById('settings-popup');
+
+let changePasswordButton = document.getElementById('change-password-button');
+changePasswordButton.addEventListener('click', changePassword);
+
+let deleteLibraryButton = document.getElementById('delete-library-button');
+deleteLibraryButton.addEventListener('click', deleteLibrary);
+
+let closeSettingsButton = document.getElementById('close-settings-button');
+closeSettingsButton.addEventListener('click', closeSettingsPopup);
 
 
 
@@ -312,6 +326,42 @@ function createBookListing(book){
 }
 
 
+//settings functions
+function showSettingsPopup(){
+  settingsPopup.hidden = false;
+}
+
+function closeSettingsPopup(){
+  settingsPopup.hidden = true;
+}
+
+function changePassword(){
+  passwordRef.putString(newPassword());
+}
+
+function newPassword(){
+  let password = prompt('Enter new password:');
+  let passwordConfirm = prompt('Confirm password:');
+  if(password !== passwordConfirm) return newPassword();
+  return password;
+}
+
+function deleteLibrary(){
+  let confirmation = prompt(`Confirm library deletion by typing delete ${name}`);
+  if(confirmation !== `delete ${name}`){
+    alert('Phew, that was close!')
+    return;
+  } 
+  libraryRef.listAll().then(function(result){
+    let items = result.items.map(item => [item, false]);
+    items.map((item) => {
+      item[0].delete().then(function(){
+        item[1] = true;
+        if(items.every(([item, deleted]) => deleted)) window.location.href = 'index.html';
+      })
+    });
+  });
+}
 
 
 //other library management functions
