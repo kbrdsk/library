@@ -133,6 +133,10 @@ function login(){
       logoutLink.hidden = false;
       addBookButton.hidden = false;
       settingsButton.hidden = false;
+      for(let listing of bookListings){
+        listing.getElementsByClassName('edit-link')[0].hidden = false;
+        listing.getElementsByClassName('delete-link')[0].hidden = false;
+      }
     }
     else alert('Incorrect password');
   })
@@ -144,6 +148,10 @@ function logout(){
   logoutLink.hidden = true;
   addBookButton.hidden = true;
   settingsButton.hidden = true;
+  for(let listing of bookListings){
+        listing.getElementsByClassName('edit-link')[0].hidden = true;
+        listing.getElementsByClassName('delete-link')[0].hidden = true;
+  }
 }
 
 
@@ -254,8 +262,8 @@ function writeBookInfo(book){
 }
 
 function updateListingInfo(listing){
-  let titleLink = listing.getElementsByClassName('title-link')[0],
-      authorLink = listing.getElementsByClassName('author-link')[0];
+  let titleLink = listing.filterLinks.getElementsByClassName('title-link')[0],
+      authorLink = listing.filterLInks.getElementsByClassName('author-link')[0];
   titleLink.textContent = listing.book.title;
   authorLink.textContent = `${listing.book.author.last}, `
              + `${listing.book.author.first}`;
@@ -284,7 +292,9 @@ function createBookListing(book){
       authorLink = document.createElement('a'),
       infoLink = document.createElement('a'),
       editLink = document.createElement('a'),
-      deleteLink = document.createElement('a');
+      deleteLink = document.createElement('a'),
+      navLinks = document.createElement('div'),
+      filterLinks = document.createElement('div');
 
   listing.classList.add('book-listing');
   listing.book = book;
@@ -308,18 +318,28 @@ function createBookListing(book){
 
   editLink.classList.add('edit-link');  
   editLink.classList.add('listing-element'); 
+  editLink.hidden = true;
   editLink.textContent = 'edit';
   editLink.addEventListener('click', () => showEditBookForm(listing));
   editLink.href = '#';
 
   deleteLink.classList.add('delete-link');
   deleteLink.classList.add('listing-element');
+  deleteLink.hidden = true;
   deleteLink.textContent = 'delete';
   deleteLink.addEventListener('click', () => deleteListing(listing));
   deleteLink.href = '#';
 
-  for(let node of [titleLink, authorLink, infoLink, editLink, deleteLink]){
-      listing.appendChild(node);
+  for(let node of [titleLink, authorLink]){
+    filterLinks.appendChild(node);
+  }
+
+  for(let node of [infoLink, editLink, deleteLink]){
+    navLinks.appendChild(node);
+  }
+
+  for(let node of [filterLinks, navLinks]){
+    listing.appendChild(node);
   }
 
   return listing;
