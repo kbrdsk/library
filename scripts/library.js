@@ -12,8 +12,10 @@ libraryName.addEventListener('click', showAllListings);
 
 let bookDisplay = document.getElementById('book-list');
 
-let addBookLink = document.getElementById('add-book-link');
-addBookLink.addEventListener('click', showCreateBookForm);
+let searchBar = document.getElementById('search-bar');
+
+let searchButton = document.getElementById('search-button');
+searchButton.addEventListener('click', search);
 
 let loginLink = document.getElementById('log-in-link');
 loginLink.addEventListener('click', login);
@@ -25,6 +27,9 @@ let settingsButton = document.getElementById('settings-button');
 
 let addBookButton = document.getElementById('add-book-button');
 addBookButton.addEventListener('click', showCreateBookForm);
+
+let addBookLink = document.getElementById('add-book-link');
+addBookLink.addEventListener('click', showCreateBookForm);
 
 
 
@@ -309,7 +314,7 @@ function createBookListing(book){
 
 
 
-//link functions
+//other library management functions
 
 function showBookInfo(ref){
   let queryString = `?bookRef=${name}/${ref}`;
@@ -337,19 +342,41 @@ function deleteListing(listing){
   })
 }
 
-function filterByAuthor(author){
+function showAllListings(){
+  displayBooks(bookListings);
+}
+
+function filterListings(filter){
   for(let listing of bookListings){
       bookDisplay.removeChild(listing);
   }
   let filteredListings = 
-      bookListings.filter(listing => listing.book.author.equals(author));
+      bookListings.filter(filter);
   displayBooks(filteredListings);
 }
 
-function showAllListings(){
-    displayBooks(bookListings);
+function filterByAuthor(author){
+  filterListings(listing => listing.book.author.equals(author));
 }
 
+function matchSearch(listing, terms){
+  let book = listing.book;
+  let infoFields = [book.author.first,
+                    book.author.last,
+                    book.title,
+                    book.isbn,
+                    book.pages,
+                    book.ref,
+                    book.read].map(field => field.toLowerCase());
+  return terms.every(term => infoFields.some(field => field.includes(term)));
+}
+
+function search(){
+  showAllListings();
+  let searchTerms = searchBar.value.match(/\S+/g)
+                                   .map(term => term.toLowerCase());
+  filterListings(listing => matchSearch(listing, searchTerms));
+}
 
 
 
