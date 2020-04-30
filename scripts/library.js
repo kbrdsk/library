@@ -373,8 +373,8 @@ function matchSearch(listing, terms){
 
 function search(){
   showAllListings();
-  let searchTerms = searchBar.value.match(/\S+/g)
-                                   .map(term => term.toLowerCase());
+  let searchTerms = searchBar.value.match(/\S+/g) || [];
+  searchTerms = searchTerms.map(term => term.toLowerCase());
   filterListings(listing => matchSearch(listing, searchTerms));
 }
 
