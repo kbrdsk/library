@@ -133,3 +133,26 @@ td, th{
 	margin: 5px;
 	font-size: 15px;
 }
+
+#settings-popup{
+	position: absolute;
+	height: 100%;
+	width: 100%;
+	top: 0px;
+	left: 0px;
+	background-color: rgba(0, 0, 0, .5);
+}
+
+#settings-button-container{
+	position: absolute;
+	top: 15%;
+	left: calc(50% - 40px);
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	font-size: 10pt;
+}
+
+#settings-button-container > *{
+	margin: 5px;
+}
