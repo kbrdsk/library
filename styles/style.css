@@ -4,14 +4,19 @@ h1{
 	cursor: pointer;
 }
 
+header{
+	font-size: 12px;
+}
+
 .book-listing{
 	width: 700px;
 }
 
 button{
 	border: none;
-	padding: 4px 7px;
+	padding: .3em .6em;
 	border-radius: 3px;
+	font-size: inherit;
 }
 
 button:focus{
@@ -81,3 +86,19 @@ td, th{
 	width: 300px;
 }
 
+#login-container{
+	position: absolute;
+	top: 40%;
+	left: 50%;
+}
+
+#username-input{
+	font-size: 30px;
+}
+
+#nav-buttons{
+	display: flex;
+	justify-content: space-evenly;
+	padding: 10px;
+	font-size: 15px;
+}
