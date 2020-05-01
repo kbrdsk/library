@@ -156,3 +156,34 @@ td, th{
 #settings-button-container > *{
 	margin: 5px;
 }
+
+#book-display{
+	display: flex;
+	flex-direction: column;
+	width: 600px;
+	padding: 15px;
+}
+
+#book-title, #book-author{
+	align-self: flex-start;
+}
+
+#book-title{
+	font-size: 20pt;
+	font-weight: bold;
+}
+
+#book-author{
+	font-size: 14pt;
+	font-style: italic;
+}
+
+#book-description{
+	align-self: center;
+	font-size: 11pt;
+}
+
+#cover-image{
+	align-self: center;
+	margin: 15px;
+}
