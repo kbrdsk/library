@@ -169,7 +169,7 @@ function registerBook(book){
   	xhr.open('GET', url, false);
   	xhr.send();
   	let index = xhr.response;
-    index += `${book.ref}\n`;
+    index += `\n${book.ref}`;
     indexRef.putString(index);
   })
 }
@@ -182,7 +182,7 @@ function parseBook(str){
 
 function getRegisteredBooks(index){
   return new Promise(function(resolve, reject){
-      setTimeout(() => reject(new Error('timeout')), 2000);
+      setTimeout(() => reject(new Error('timeout')), 10000);
       for(let i in index){
         console.log(index[i][0]);
         let ref = libraryRef.child(index[i][0]);
@@ -262,8 +262,8 @@ function writeBookInfo(book){
 }
 
 function updateListingInfo(listing){
-  let titleLink = listing.filterLinks.getElementsByClassName('title-link')[0],
-      authorLink = listing.filterLInks.getElementsByClassName('author-link')[0];
+  let titleLink = listing.getElementsByClassName('title-link')[0],
+      authorLink = listing.getElementsByClassName('author-link')[0];
   titleLink.textContent = listing.book.title;
   authorLink.textContent = `${listing.book.author.last}, `
              + `${listing.book.author.first}`;
@@ -274,7 +274,10 @@ function createBook(){
   let book = new Book(new Author());
   writeBookInfo(book);
   addBookToLibrary(book);
-  bookListings.push(createBookListing(book));
+  let listing = createBookListing(book);
+  listing.getElementsByClassName('edit-link')[0].hidden = false;
+  listing.getElementsByClassName('delete-link')[0].hidden = false;
+  bookListings.push(listing);
 }
 
 function resetBookForm(){
@@ -293,20 +296,14 @@ function createBookListing(book){
       infoLink = document.createElement('td'),
       editLink = document.createElement('td'),
       deleteLink = document.createElement('td');
-      //navLinks = document.createElement('div'),
-      //filterLinks = document.createElement('div');
 
   listing.classList.add('book-listing');
   listing.book = book;
 
-  /*navLinks.classList.add('listing-links-container');
-  navLinks.classList.add('listing-navlinks');
-  filterLinks.classList.add('listing-links-container');
-  filterLinks.classList.add('listing-filterlinks');*/
-
   titleLink.classList.add('title-link');
   titleLink.classList.add('listing-element');
   titleLink.textContent = book.title;
+  titleLink.addEventListener('click', () => showBookInfo(book.ref));
 
   authorLink.classList.add('author-link');
   authorLink.classList.add('listing-element');
@@ -329,14 +326,6 @@ function createBookListing(book){
   deleteLink.hidden = true;
   deleteLink.textContent = 'delete';
   deleteLink.addEventListener('click', () => deleteListing(listing));
-
-/*  for(let node of [titleLink, authorLink]){
-    filterLinks.appendChild(node);
-  }
-
-  for(let node of [infoLink, editLink, deleteLink]){
-    navLinks.appendChild(node);
-  }*/
 
   for(let node of [titleLink, authorLink, infoLink, editLink, deleteLink]){
     listing.appendChild(node);
