@@ -18,7 +18,7 @@ let searchButton = document.getElementById('search-button');
 searchButton.addEventListener('click', search);
 
 let loginLink = document.getElementById('log-in-link');
-loginLink.addEventListener('click', login);
+loginLink.addEventListener('click', userLogin);
 
 let logoutLink = document.getElementById('log-out-link');
 logoutLink.addEventListener('click', logout);
@@ -82,10 +82,12 @@ indexRef.getDownloadURL().then(function(url){
            .then(() => {
            	   books.sort(compareBooks);
                bookListings = books.map(createBookListing);
+               if((document.cookie || '').match(new RegExp(`login_${name}=true`))) login();
                displayBooks(bookListings);
        });
     }
 });
+
 
 
 
@@ -119,7 +121,7 @@ function createRef(book){
 
 //login/logout functions
 
-function login(){
+function userLogin(){
   passwordRef.getDownloadURL().then(function(url){
     let xhr = new XMLHttpRequest();
     xhr.open('GET', url, false);
@@ -127,19 +129,22 @@ function login(){
 
     let password = xhr.response;
 
-    if(password === prompt("Enter password:")){
-      addBookLink.hidden = false;
-      loginLink.hidden = true;
-      logoutLink.hidden = false;
-      addBookButton.hidden = false;
-      settingsButton.hidden = false;
-      for(let listing of bookListings){
-        listing.getElementsByClassName('edit-link')[0].hidden = false;
-        listing.getElementsByClassName('delete-link')[0].hidden = false;
-      }
-    }
+    if(password === prompt("Enter password:")) login();
     else alert('Incorrect password');
   })
+}
+
+function login(){
+  addBookLink.hidden = false;
+  loginLink.hidden = true;
+  logoutLink.hidden = false;
+  addBookButton.hidden = false;
+  settingsButton.hidden = false;
+  for(let listing of bookListings){
+    listing.getElementsByClassName('edit-link')[0].hidden = false;
+    listing.getElementsByClassName('delete-link')[0].hidden = false;
+  }
+  document.cookie = `login_${name}=true`;
 }
 
 function logout(){
@@ -153,6 +158,7 @@ function logout(){
         listing.getElementsByClassName('edit-link')[0].hidden = true;
         listing.getElementsByClassName('delete-link')[0].hidden = true;
   }
+  document.cookie = `login_${name}=false`;
 }
 
 
