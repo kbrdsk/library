@@ -148,6 +148,7 @@ function logout(){
   logoutLink.hidden = true;
   addBookButton.hidden = true;
   settingsButton.hidden = true;
+  settingsPopup.hidden = true;
   for(let listing of bookListings){
         listing.getElementsByClassName('edit-link')[0].hidden = true;
         listing.getElementsByClassName('delete-link')[0].hidden = true;
