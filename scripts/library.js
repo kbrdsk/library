@@ -319,14 +319,12 @@ function createBookListing(book){
   infoLink.addEventListener('click', () => showBookInfo(book.ref));
 
   editLink.classList.add('edit-link');  
-  editLink.classList.add('listing-element'); 
-  editLink.hidden = true;
+  editLink.classList.add('listing-element');
   editLink.textContent = 'edit';
   editLink.addEventListener('click', () => showEditBookForm(listing));
 
   deleteLink.classList.add('delete-link');
   deleteLink.classList.add('listing-element');
-  deleteLink.hidden = true;
   deleteLink.textContent = 'delete';
   deleteLink.addEventListener('click', () => deleteListing(listing));
 
